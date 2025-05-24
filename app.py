@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from PIL import Image
@@ -7,7 +8,7 @@ from PIL import Image
 # Load the model
 @st.cache_resource
 def load_trained_model():
-    model = load_model('bird_drone_classifier.h5')
+    model = tf.keras.models.load_model("bird_drone_classifier.keras")
     return model
 
 model = load_trained_model()
