@@ -7,7 +7,7 @@ from PIL import Image
 # Load the model
 @st.cache_resource
 def load_trained_model():
-    model = load_model('D:/huli/bird_drone_classifier.h5')
+    model = load_model('bird_drone_classifier.h5')
     return model
 
 model = load_trained_model()
