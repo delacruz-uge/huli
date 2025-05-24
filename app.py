@@ -1,36 +1,28 @@
 import streamlit as st
-import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from PIL import Image
+import numpy as np
 
-# Load the model
-@st.cache_resource
-def load_trained_model():
-    model = tf.keras.models.load_model("bird_drone_classifier.keras")
-    return model
+# Load the trained model
+model = load_model('bird_drone_classifier.keras')
 
-model = load_trained_model()
+st.title("Bird vs Drone Image Classifier")
 
-# App title
-st.title("Bird vs Drone Classifier")
+uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
-# File uploader
-uploaded_file = st.file_uploader("Upload an image of a bird or drone", type=["jpg", "jpeg", "png"])
+target_size = 180  # Should match your training/preprocessing size
 
-# Prediction
 if uploaded_file is not None:
-    img = Image.open(uploaded_file).convert('RGB')
-    st.image(img, caption='Uploaded Image', use_column_width=True)
+    image = Image.open(uploaded_file).convert('RGB')
+    image_resized = image.resize((target_size, target_size))
+    st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    # Resize and preprocess the image
-    img_resized = img.resize((224, 224))
-    img_array = image.img_to_array(img_resized)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+    img_array = np.array(image_resized) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
 
-    # Make prediction
-    prediction = model.predict(img_array)
-    class_label = "Drone" if prediction[0][0] > 0.5 else "Bird"
+    prediction = model.predict(img_array)[0][0]
+    label = "Drone" if prediction > 0.5 else "Bird"
+    confidence = prediction if prediction > 0.5 else 1 - prediction
 
-    st.markdown(f"### Prediction: **{class_label}** ({prediction[0][0]:.2f})")
+    st.write(f"Prediction: **{label}** with confidence {confidence:.2f}")
