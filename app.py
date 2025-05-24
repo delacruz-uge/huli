@@ -7,7 +7,7 @@ import numpy as np
 
 # Load the trained model - use try-except for better error handling
 try:
-    model = load_model('bird_drone_classifier.keras')
+    model = load_model('bird_drone_classifier_v3.keras')
     # model = load_model('bird_drone_classifier.h5')  # Alternative if you saved as .h5
 except Exception as e:
     st.error(f"Error loading model: {e}")
